@@ -815,6 +815,42 @@ Tag-File-Character-Encoding: UTF-8
 
         self.assertEqual(target_lines, expected_bag_info_sequence)
 
+    def test_save_bag_sort_keys_true(self):
+        bagit.make_bag(self.tmpdir, checksums=['md5'])
+
+        with open(j(self.tmpdir, 'bag-info.txt'), 'a') as f:
+            print('Tag 3: C', file=f)
+            print('Tag 2: B', file=f)
+            print('Tag 1: A', file=f)
+            print('Tag 4: D', file=f)
+
+        bag = bagit.Bag(self.tmpdir)
+        bag.save(manifests=True, sort_keys=True)
+
+        expected_bag_info_sequence = ['Tag 1: A', 'Tag 2: B', 'Tag 3: C', 'Tag 4: D']
+        bag_info_txt = slurp_text_file(j(self.tmpdir, 'bag-info.txt')).split('\n')
+        target_lines = list(filter(lambda x: x in expected_bag_info_sequence, bag_info_txt))
+
+        self.assertEqual(target_lines, expected_bag_info_sequence)
+
+    def test_save_bag_sort_keys_false(self):
+        bagit.make_bag(self.tmpdir, checksums=['md5'])
+
+        with open(j(self.tmpdir, 'bag-info.txt'), 'a') as f:
+            print('Tag 3: C', file=f)
+            print('Tag 2: B', file=f)
+            print('Tag 1: A', file=f)
+            print('Tag 4: D', file=f)
+
+        bag = bagit.Bag(self.tmpdir)
+        bag.save(manifests=True, sort_keys=False)
+
+        expected_bag_info_sequence = ['Tag 3: C', 'Tag 2: B', 'Tag 1: A', 'Tag 4: D']
+        bag_info_txt = slurp_text_file(j(self.tmpdir, 'bag-info.txt')).split('\n')
+        target_lines = list(filter(lambda x: x in expected_bag_info_sequence, bag_info_txt))
+
+        self.assertEqual(target_lines, expected_bag_info_sequence)
+
     def test_default_bagging_date(self):
         info = {"Contact-Email": "ehs@pobox.com"}
         bagit.make_bag(self.tmpdir, bag_info=info)
