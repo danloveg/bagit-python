@@ -3,6 +3,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import codecs
+import collections
 import datetime
 import hashlib
 import logging
@@ -772,6 +773,47 @@ Tag-File-Character-Encoding: UTF-8
 
         self.assertTrue(bag.is_valid())
         self.assertEqual(bag.info["Test-Tag"], list(map(str, range(1, 7))))
+
+    def test_bag_info_keys_sorted_by_default(self):
+        info = collections.OrderedDict()
+        info['Tag 4'] = 'D'
+        info['Tag 1'] = 'A'
+        info['Tag 3'] = 'C'
+        info['Tag 2'] = 'B'
+        expected_bag_info_sequence = ['Tag 1: A', 'Tag 2: B', 'Tag 3: C', 'Tag 4: D']
+
+        bagit.make_bag(self.tmpdir, bag_info=info, checksums=["md5"])
+        bag_info_txt = slurp_text_file(j(self.tmpdir, 'bag-info.txt')).split('\n')
+        target_lines = list(filter(lambda x: x in expected_bag_info_sequence, bag_info_txt))
+
+        self.assertEqual(target_lines, expected_bag_info_sequence)
+
+    def test_bag_info_sort_keys_true(self):
+        info = collections.OrderedDict()
+        info['Tag 3'] = 'C'
+        info['Tag 2'] = 'B'
+        info['Tag 1'] = 'A'
+        expected_bag_info_sequence = ['Tag 1: A', 'Tag 2: B', 'Tag 3: C']
+
+        bagit.make_bag(self.tmpdir, bag_info=info, checksums=["md5"], sort_keys=True)
+        bag_info_txt = slurp_text_file(j(self.tmpdir, 'bag-info.txt')).split('\n')
+        target_lines = list(filter(lambda x: x in expected_bag_info_sequence, bag_info_txt))
+
+        self.assertEqual(target_lines, expected_bag_info_sequence)
+
+    def test_bag_info_sort_keys_false(self):
+        info = collections.OrderedDict()
+        info['Tag 3'] = 'C'
+        info['Tag 2'] = 'B'
+        info['Tag 1'] = 'A'
+        info['Tag 4'] = 'D'
+        expected_bag_info_sequence = ['Tag 3: C', 'Tag 2: B', 'Tag 1: A', 'Tag 4: D']
+
+        bagit.make_bag(self.tmpdir, bag_info=info, checksums=["md5"], sort_keys=False)
+        bag_info_txt = slurp_text_file(j(self.tmpdir, 'bag-info.txt')).split('\n')
+        target_lines = list(filter(lambda x: x in expected_bag_info_sequence, bag_info_txt))
+
+        self.assertEqual(target_lines, expected_bag_info_sequence)
 
     def test_default_bagging_date(self):
         info = {"Contact-Email": "ehs@pobox.com"}
