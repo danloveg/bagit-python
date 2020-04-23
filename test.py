@@ -819,10 +819,8 @@ Tag-File-Character-Encoding: UTF-8
         bagit.make_bag(self.tmpdir, checksums=['md5'])
 
         with open(j(self.tmpdir, 'bag-info.txt'), 'a') as f:
-            print('Tag 3: C', file=f)
-            print('Tag 2: B', file=f)
-            print('Tag 1: A', file=f)
-            print('Tag 4: D', file=f)
+            for tag in ['Tag 3: C', 'Tag 2: B', 'Tag 1: A', 'Tag 4: D']:
+                print(tag, file=f)
 
         bag = bagit.Bag(self.tmpdir)
         bag.save(manifests=True, sort_keys=True)
@@ -837,10 +835,8 @@ Tag-File-Character-Encoding: UTF-8
         bagit.make_bag(self.tmpdir, checksums=['md5'])
 
         with open(j(self.tmpdir, 'bag-info.txt'), 'a') as f:
-            print('Tag 3: C', file=f)
-            print('Tag 2: B', file=f)
-            print('Tag 1: A', file=f)
-            print('Tag 4: D', file=f)
+            for tag in ['Tag 3: C', 'Tag 2: B', 'Tag 1: A', 'Tag 4: D']:
+                print(tag, file=f)
 
         bag = bagit.Bag(self.tmpdir)
         bag.save(manifests=True, sort_keys=False)
