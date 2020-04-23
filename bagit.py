@@ -142,7 +142,7 @@ UNICODE_BYTE_ORDER_MARK = "\uFEFF"
 
 
 def make_bag(
-    bag_dir, bag_info=None, processes=1, checksums=None, checksum=None, encoding="utf-8"
+    bag_dir, bag_info=None, processes=1, checksums=None, checksum=None, encoding="utf-8", **kwargs
 ):
     """
     Convert a given directory into a bag. You can pass in arbitrary
@@ -261,7 +261,8 @@ def make_bag(
                 )
 
             bag_info["Payload-Oxum"] = "%s.%s" % (total_bytes, total_files)
-            _make_tag_file("bag-info.txt", bag_info)
+            sort_keys = kwargs.get('sort_keys') if 'sort_keys' in kwargs else True
+            _make_tag_file("bag-info.txt", bag_info, sort_keys)
 
             for c in checksums:
                 _make_tagmanifest_file(c, bag_dir, encoding="utf-8")
@@ -1224,8 +1225,8 @@ def _parse_tags(tag_file):
         yield (tag_name, tag_value.strip())
 
 
-def _make_tag_file(bag_info_path, bag_info):
-    headers = sorted(bag_info.keys())
+def _make_tag_file(bag_info_path, bag_info, sort_keys):
+    headers = sorted(bag_info.keys()) if sort_keys else bag_info.keys()
     with open_text_file(bag_info_path, "w") as f:
         for h in headers:
             values = bag_info[h]
