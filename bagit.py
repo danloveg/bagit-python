@@ -456,7 +456,7 @@ class Bag(object):
             if key.startswith("data" + os.sep)
         )
 
-    def save(self, processes=1, manifests=False):
+    def save(self, processes=1, manifests=False, sort_keys=True):
         """
         save will persist any changes that have been made to the bag
         metadata (self.info).
@@ -469,6 +469,9 @@ class Bag(object):
 
         If you want to control the number of processes that are used when
         recalculating checksums use the processes parameter.
+
+        If you want to control whether the keys written to the tag file are
+        sorted, use the sort_keys parameter.
         """
         # Error checking
         if not self.path:
@@ -520,7 +523,7 @@ class Bag(object):
             LOGGER.info(_("Updating Payload-Oxum in %s"), self.tag_file_name)
             self.info["Payload-Oxum"] = "%s.%s" % (total_bytes, total_files)
 
-        _make_tag_file(self.tag_file_name, self.info)
+        _make_tag_file(self.tag_file_name, self.info, sort_keys)
 
         # Update tag-manifest for changes to manifest & bag-info files
         for alg in self.algorithms:
