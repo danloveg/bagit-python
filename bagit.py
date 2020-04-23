@@ -470,8 +470,8 @@ class Bag(object):
         If you want to control the number of processes that are used when
         recalculating checksums use the processes parameter.
 
-        If you want to control whether the keys written to the tag file are
-        sorted, use the sort_keys parameter.
+        If you want to control whether the metadata keys written to the tag file
+        are sorted, use the sort_keys parameter. Default behaviour is True.
         """
         # Error checking
         if not self.path:
